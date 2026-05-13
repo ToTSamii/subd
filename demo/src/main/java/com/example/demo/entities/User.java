@@ -1,9 +1,10 @@
 package com.example.demo.entities;
 
-import java.time.LocalDate;
-
+import java.util.Date;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
@@ -18,8 +19,9 @@ import lombok.Setter;
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Код_пользователя", nullable = false, unique = true)
-    private String userId;
+    private Integer userId;
 
     @Column(name = "Логин", nullable = false, length = 50)
     private String login;
@@ -31,10 +33,10 @@ public class User {
     private String email;
 
     @Column(name = "Дата_регистрации")
-    private LocalDate registrationDate;
+    private Date registrationDate;
 
     @Column(name = "Фотография")
-    private byte[] photo;
+    private String photo;
 
     @OneToOne
     @JoinColumn(name = "Код_роли")

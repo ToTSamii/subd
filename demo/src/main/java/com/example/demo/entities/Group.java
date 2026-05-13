@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -18,6 +20,7 @@ import lombok.Setter;
 public class Group {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Код_группы", nullable = false, unique = true)
     private Integer code;
 
@@ -34,6 +37,8 @@ public class Group {
     @JoinColumn(name = "Код_курса")
     private Course course;
 
-    @Column(name = "Код_преподавателя")
-    private Integer teacherCode; 
+    @ManyToOne
+    @JoinColumn(name = "Код_преподователя")
+    private Teacher teacher;
+    
 }

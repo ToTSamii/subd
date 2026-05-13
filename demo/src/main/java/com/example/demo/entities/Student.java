@@ -2,6 +2,8 @@ package com.example.demo.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
@@ -15,8 +17,9 @@ import lombok.Setter;
 public class Student {
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Код_студента", nullable = false, unique = true)
-    private String code;
+    private Integer code;
 
     @Column(name = "Фамилия", nullable = false, length = 100)
     private String lastName;
