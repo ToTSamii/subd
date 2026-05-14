@@ -12,8 +12,8 @@ import com.example.demo.entities.User;
 import com.example.demo.repositories.StudentRepository;
 import com.example.demo.repositories.TeacherRepository;
 import com.example.demo.repositories.UserRepository;
-
 import jakarta.transaction.Transactional;
+
 
 @Service
 public class ProfileService {
@@ -21,15 +21,62 @@ public class ProfileService {
     StudentRepository studentRepository;
     TeacherRepository teacherRepository;
     UserRepository userRepository;
+    JwtService jwtService;
 
     public ProfileService(StudentRepository studentRepository,
                         TeacherRepository teacherRepository,
-                        UserRepository userRepository) {
+                        UserRepository userRepository,
+                        JwtService jwtService) {
 
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
         this.userRepository = userRepository;
+        this.jwtService = jwtService;
     
+    }
+
+
+    //Общий метод полчения профиля, определяющий тип пользователя
+    @Transactional
+    public ResponseEntity<?> getProfile(String token) {
+
+        try {
+
+            String login = jwtService.parseLogin(token.substring(7));
+            User user = userRepository.findByLogin(login).orElse(null);
+
+            if (user != null) {
+
+                Integer code_role = user.getRole().getCode();
+
+                switch (code_role) {
+
+                    case 1:
+                        return getStudentProfile(user.getUserId());
+
+                    case 2:
+                       return getTeacherProfile(user.getUserId());
+  
+                    case 3:
+                        return getAdminProfile(user.getUserId());
+
+                    default:
+                        return ResponseEntity.status(403).body("Пользователь не авторизован");
+
+                }
+
+            } else {
+
+                return ResponseEntity.status(404).body("Пользователь не найден!");
+
+            }
+
+        } catch (Exception e) {
+
+            return ResponseEntity.status(500).body("Произошла ошибка при получении профиля пользователя");
+
+        }
+
     }
 
 
@@ -39,7 +86,7 @@ public class ProfileService {
 
         try {
 
-            Student student = studentRepository.findById(studentId).orElse(null);
+            Student student = studentRepository.findByUser_UserId(studentId).orElse(null);
 
             if (student != null) {
 
@@ -79,7 +126,8 @@ public class ProfileService {
 
         try {
 
-            Teacher teacher = teacherRepository.findById(teacherId).orElse(null);
+            Teacher teacher = teacherRepository.findByUser_UserId(teacherId).orElse(null);
+            System.out.println(teacherId);
 
             if (teacher != null) {
 
