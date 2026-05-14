@@ -52,15 +52,6 @@ public class AdminUsersService {
     @Transactional
     public ResponseEntity<?> addUser(RequestUser requestUser) {
 
-        System.out.println("=== RequestUser DEBUG ===");
-        System.out.println("RequestUser object: " + requestUser);
-        System.out.println("Login: '" + requestUser.getLogin() + "'");
-        System.out.println("Email: '" + requestUser.getEmail() + "'");
-        System.out.println("Password: '" + requestUser.getPassword() + "'");
-        System.out.println("RegistrationDate: '" + requestUser.getRegistrationDate() + "'");
-        System.out.println("Photo: '" + requestUser.getPhoto() + "'");
-        System.out.println("Role: '" + requestUser.getRole() + "'");
-
         try {
 
             User user = new User();

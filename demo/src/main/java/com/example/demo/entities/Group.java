@@ -1,6 +1,6 @@
 package com.example.demo.entities;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,23 +22,23 @@ public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Код_группы", nullable = false, unique = true)
-    private Integer code;
+    private Integer id;
 
     @Column(name = "Название_группы", nullable = false, length = 100)
     private String name;
 
     @Column(name = "Дата_начала")
-    private LocalDate startDate;
+    private Date startDate;
 
     @Column(name = "Дата_окончания")
-    private LocalDate endDate;
+    private Date endDate;
 
     @ManyToOne
     @JoinColumn(name = "Код_курса")
     private Course course;
 
     @ManyToOne
-    @JoinColumn(name = "Код_преподователя")
+    @JoinColumn(name = "Код_преподавателя")
     private Teacher teacher;
     
 }

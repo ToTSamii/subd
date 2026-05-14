@@ -5,8 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,10 +30,18 @@ public class Student {
     @Column(name = "Имя", nullable = false, length = 100)
     private String firstName;
 
-    @Column(name = "Отчество", nullable = false, length = 100)
+    @Column(name = "Отчество", length = 100)
     private String middleName;
 
     @Column(name = "Дата_рождения", nullable = false)
-    private LocalDate birthDate;
+    private Date birthDate;
+
+    @OneToOne
+    @JoinColumn(name="Код_пользователя", nullable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "Код_группы", nullable = false)
+    private Group group;
     
 }

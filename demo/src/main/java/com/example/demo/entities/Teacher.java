@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.Date;
 import lombok.Getter;
@@ -38,5 +40,9 @@ public class Teacher {
 
     @Column(name = "Телефон", nullable = true, length = 15)
     private String phoneNumber;
+
+    @OneToOne
+    @JoinColumn(name = "Код_пользователя")
+    private User user;
     
 }
