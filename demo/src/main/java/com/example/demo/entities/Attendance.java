@@ -35,8 +35,8 @@ public class Attendance {
     private Student student;
 
     @ManyToOne
-    @JoinColumn(name = "Код_группы")
-    private Group group;
+    @JoinColumn(name = "Код_курса")
+    private Course course;
 
     @Column(name = "Название_курса_денорм")
     private String courseNameDenorm;

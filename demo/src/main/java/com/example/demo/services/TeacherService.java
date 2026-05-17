@@ -7,9 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.dtos.responseDto.ResponseGroup;
 import com.example.demo.dtos.responseDto.ResponseTeacher.ResponseGroupsTeacher;
+import com.example.demo.dtos.responseDto.ResponseTeacher.ResponseScheldueTeacher;
+import com.example.demo.dtos.responseDto.ResponseTeacher.ResponseSchelduesTeacher;
 import com.example.demo.entities.Group;
+import com.example.demo.entities.Schedule;
 import com.example.demo.entities.Teacher;
 import com.example.demo.repositories.GroupRepository;
+import com.example.demo.repositories.ScheduleRepository;
 import com.example.demo.repositories.TeacherRepository;
 
 
@@ -18,12 +22,16 @@ public class TeacherService {
 
     TeacherRepository teacherRepository;
     GroupRepository groupRepository;
+    ScheduleRepository scheduleRepository;
 
 
-    TeacherService(TeacherRepository teacherRepository, GroupRepository groupRepository) {
+    TeacherService(TeacherRepository teacherRepository, 
+                    GroupRepository groupRepository, 
+                    ScheduleRepository scheduleRepository) {
 
         this.teacherRepository = teacherRepository;
         this.groupRepository = groupRepository;
+        this.scheduleRepository = scheduleRepository;
 
     }
 
@@ -73,5 +81,54 @@ public class TeacherService {
 
     }
 
+
+    //Получение расписания преподавателя по его id
+    @Transactional
+    public ResponseEntity<?> getTeacherSchedule(Integer teacherId) {
+
+        try {
+
+            Teacher teacher = teacherRepository.findById(teacherId).orElse(null);
+
+            if (teacher != null) {
+
+                List<Group> groups = groupRepository.findByTeacherCode(teacherId);
+                List<ResponseScheldueTeacher> responseSchelduesTeacher = new ArrayList<>();
+
+                for (Group group : groups) {
+
+                    List<Schedule> schedules = scheduleRepository.findByGroupId(group.getId());
+
+                    for (Schedule schedule : schedules) {
+                        
+                        ResponseScheldueTeacher responseScheldueTeacher = new ResponseScheldueTeacher();
+                        responseScheldueTeacher.setDateTime(schedule.getDateTime());
+                        responseScheldueTeacher.setGroupName(schedule.getGroupNameDenorm());
+                        responseScheldueTeacher.setTopic(schedule.getTopic());
+
+                        responseSchelduesTeacher.add(responseScheldueTeacher);
+
+                    }
+
+                }
+
+                ResponseSchelduesTeacher responseSchelduesTeacherList = new ResponseSchelduesTeacher();
+                responseSchelduesTeacherList.setResponseScheldues(responseSchelduesTeacher);
+
+                return ResponseEntity.ok(responseSchelduesTeacherList);
+
+            } else {
+
+                return ResponseEntity.status(404).body("Преподаватель с id: " + teacherId + " не найден");
+            
+            }
+
+        } catch (Exception e) {
+
+            return ResponseEntity.status(500).body("Ошибка при получении информации о преподавателе: " + e.getMessage());
+
+        }
+
+    }
 
 }
