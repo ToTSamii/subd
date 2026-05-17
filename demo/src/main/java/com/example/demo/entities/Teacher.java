@@ -42,7 +42,7 @@ public class Teacher {
     private String phoneNumber;
 
     @OneToOne
-    @JoinColumn(name = "Код_пользователя")
+    @JoinColumn(name = "Код_пользователя", nullable = false)
     private User user;
     
 }

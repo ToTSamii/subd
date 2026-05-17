@@ -41,7 +41,7 @@ public class Student {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "Код_группы", nullable = false)
+    @JoinColumn(name = "Код_группы", nullable = true)
     private Group group;
     
 }

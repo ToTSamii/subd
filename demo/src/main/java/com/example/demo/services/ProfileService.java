@@ -129,7 +129,6 @@ public class ProfileService {
         try {
 
             Teacher teacher = teacherRepository.findByUser_UserId(teacherId).orElse(null);
-            System.out.println(teacherId);
 
             if (teacher != null) {
 
