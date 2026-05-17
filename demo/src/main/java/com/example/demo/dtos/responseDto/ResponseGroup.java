@@ -1,4 +1,4 @@
-package com.example.demo.dtos.responseDto.ResponseStudent;
+package com.example.demo.dtos.responseDto;
 
 import java.util.Date;
 

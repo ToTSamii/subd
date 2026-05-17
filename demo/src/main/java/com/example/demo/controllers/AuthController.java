@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dtos.requestDto.LoginRequest;
-import com.example.demo.services.AuthService;
+import com.example.demo.services.AuthServices.AuthService;
+
 import lombok.extern.slf4j.Slf4j;
 
 

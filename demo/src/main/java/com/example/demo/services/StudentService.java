@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dtos.responseDto.ResponseGroup;
 import com.example.demo.dtos.responseDto.ResponseStudent.ResponseAttendance;
 import com.example.demo.dtos.responseDto.ResponseStudent.ResponseAttendanceList;
-import com.example.demo.dtos.responseDto.ResponseStudent.ResponseGroup;
 import com.example.demo.dtos.responseDto.ResponseStudent.ResponseScheldue;
 import com.example.demo.dtos.responseDto.ResponseStudent.ResponseScheldues;
 import com.example.demo.entities.Attendance;

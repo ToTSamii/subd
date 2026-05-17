@@ -12,6 +12,8 @@ import com.example.demo.entities.User;
 import com.example.demo.repositories.StudentRepository;
 import com.example.demo.repositories.TeacherRepository;
 import com.example.demo.repositories.UserRepository;
+import com.example.demo.services.AuthServices.JwtService;
+
 import jakarta.transaction.Transactional;
 
 
