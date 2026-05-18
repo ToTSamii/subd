@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dtos.requestDto.RequestGroup;
 import com.example.demo.services.AdminServices.AdminGroupService;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 @RestController
-@RequestMapping("/admin/groups")
+@RequestMapping("/api/admin/groups")
+@Slf4j
 public class AdminGroupsController {
 
    private AdminGroupService adminGroupsService;

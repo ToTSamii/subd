@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dtos.requestDto.RequestUser;
 import com.example.demo.services.AdminServices.AdminUsersService;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 @RestController
-@RequestMapping("/admin/users")
+@RequestMapping("/api/admin/users")
+@Slf4j
 public class AdminUsersCntroller {
 
     private AdminUsersService adminService;

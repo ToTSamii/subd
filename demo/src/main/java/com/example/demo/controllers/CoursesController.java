@@ -28,5 +28,13 @@ public class CoursesController {
         return courseService.getAllCourses();
 
     }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCourseById(Integer id) {
+
+        return courseService.getCourseById(id);
+
+    }
     
 }

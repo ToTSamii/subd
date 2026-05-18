@@ -61,11 +61,11 @@ public class AdminUsersService {
             user.setPhoto(requestUser.getPhoto());
             user.setRegistrationDate(requestUser.getRegistrationDate());
 
-            Integer code_role = 3;
+            Integer code_role = 1;
 
             if (requestUser.getRole() != null && requestUser.getRole().equals("Администратор")) {
                 
-                code_role = 1;
+                code_role = 3;
             
             } else if (requestUser.getRole() != null && requestUser.getRole().equals("Преподаватель")) { // Исправлено "Преподоваьтель"
                 
