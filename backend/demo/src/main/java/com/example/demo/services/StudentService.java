@@ -51,18 +51,26 @@ public class StudentService {
     }
 
 
-    //Получение расписания для студента по его id
+    //Получение расписания для студента по по id пользователя
     @Transactional
-    public ResponseEntity<?> getStudentSchedule(Integer studentId) {
+    public ResponseEntity<?> getStudentSchedule(Integer userId) {
 
         try {
 
-            Student student = studentRepository.findById(studentId).orElse(null);
+            Student student = studentRepository.findByUser_UserId(userId).orElse(null);
             
             if (student != null) {
 
+                if (student.getGroup() == null) {return ResponseEntity.status(404).body("Студент не привязан к группе!");}
+
                 List<Schedule> schedules = scheduleRepository.findByGroupId(student.getGroup().getId());
                 List<ResponseScheldue> responsesScheldueList = new ArrayList<>();
+
+                if (schedules.isEmpty()) {
+
+                    return ResponseEntity.status(404).body("Нет расписания!");
+
+                }
 
                 for (Schedule schedule : schedules) {
                     
@@ -83,7 +91,7 @@ public class StudentService {
 
             } else {
 
-                return ResponseEntity.status(404).body("Студент с id: " + studentId + " не найден");
+                return ResponseEntity.status(404).body("Студент с id: " + userId + " не найден");
 
             }
 
@@ -96,18 +104,24 @@ public class StudentService {
     }
 
 
-    //Получение данных об успеваемости студента по его id
+    //Получение данных об успеваемости студента по id пользователя
     @Transactional
-    public ResponseEntity<?> getStudentAttendance(Integer studentId) {
+    public ResponseEntity<?> getStudentAttendance(Integer userId) {
 
         try {
 
-            Student student = studentRepository.findById(studentId).orElse(null);
+            Student student = studentRepository.findByUser_UserId(userId).orElse(null);
 
             if (student != null) {
 
-                List<Attendance> attendanceList = attendanceRepository.findByStudentCode(studentId);
+                List<Attendance> attendanceList = attendanceRepository.findByStudentCode(student.getCode());
                 List<ResponseAttendance> responsesAttendances = new ArrayList<>();
+
+                if (attendanceList.isEmpty()) {
+
+                    return ResponseEntity.status(404).body("Нет успеваемости!");
+
+                }
 
                 for (Attendance attendance : attendanceList) {
 
@@ -127,7 +141,7 @@ public class StudentService {
 
             } else {
 
-                return ResponseEntity.status(404).body("Студент с id: " + studentId + " не найден");
+                return ResponseEntity.status(404).body("Студент с id: " + userId + " не найден");
 
             }
 
@@ -140,15 +154,21 @@ public class StudentService {
     }
 
 
-    //Получение группы студента по его id
+    //Получение группы студента по id пользователя
     @Transactional
-    public ResponseEntity<?> getStudentGroup(Integer studentId) {
+    public ResponseEntity<?> getStudentGroup(Integer userId) {
 
         try {
 
-            Student student = studentRepository.findById(studentId).orElse(null);
+            Student student = studentRepository.findByUser_UserId(userId).orElse(null);
 
             if (student != null) {
+
+                if (student.getGroup() == null) {
+
+                    return ResponseEntity.status(404).body("Нет успеваемости!");
+
+                }
 
                 ResponseGroup responseGroup = new ResponseGroup();
                 responseGroup.setName(student.getGroup().getName());
@@ -160,7 +180,7 @@ public class StudentService {
 
             } else {
 
-                return ResponseEntity.status(404).body("Студент с id: " + studentId + " не найден");
+                return ResponseEntity.status(404).body("Студент с id: " + userId + " не найден");
 
             }
 
@@ -173,7 +193,7 @@ public class StudentService {
     }
 
 
-    //Возможность добавления отметки студенту по его id и id курса (Может только учитель или админ)
+    //Возможность добавления отметки студенту по id пользователя и id курса (Может только учитель или админ)
     @Transactional
     public ResponseEntity<?> addStudentMark(RequestAddMark requestAddMark) {
 

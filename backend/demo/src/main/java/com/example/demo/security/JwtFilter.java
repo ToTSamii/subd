@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,7 +35,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String uri = request.getRequestURI();
 
-        if (uri.equals("/api/auth/login") || uri.equals("/api/auth/register")) {
+        if (uri.equals("/api/auth/login") || 
+            uri.equals("/api/auth/register") || 
+            uri.startsWith("/api/courses/")) {
 
             chain.doFilter(request, response);
             return;

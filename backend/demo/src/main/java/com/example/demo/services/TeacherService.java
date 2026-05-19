@@ -82,17 +82,17 @@ public class TeacherService {
     }
 
 
-    //Получение расписания преподавателя по его id
+    //Получение расписания преподавателя по id пользователя
     @Transactional
-    public ResponseEntity<?> getTeacherSchedule(Integer teacherId) {
+    public ResponseEntity<?> getTeacherSchedule(Integer userId) {
 
         try {
 
-            Teacher teacher = teacherRepository.findById(teacherId).orElse(null);
+            Teacher teacher = teacherRepository.findByUser_UserId(userId).orElse(null);
 
             if (teacher != null) {
 
-                List<Group> groups = groupRepository.findByTeacherCode(teacherId);
+                List<Group> groups = groupRepository.findByTeacherCode(teacher.getCode());
                 List<ResponseScheldueTeacher> responseSchelduesTeacher = new ArrayList<>();
 
                 for (Group group : groups) {
@@ -119,7 +119,7 @@ public class TeacherService {
 
             } else {
 
-                return ResponseEntity.status(404).body("Преподаватель с id: " + teacherId + " не найден");
+                return ResponseEntity.status(404).body("Преподаватель с id: " + userId + " не найден");
             
             }
 

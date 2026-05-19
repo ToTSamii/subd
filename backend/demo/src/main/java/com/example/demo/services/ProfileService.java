@@ -75,7 +75,7 @@ public class ProfileService {
 
         } catch (Exception e) {
 
-            return ResponseEntity.status(500).body("Произошла ошибка при получении профиля пользователя");
+            return ResponseEntity.status(500).body("Произошла ошибка при получении профиля пользователя. " + e.getMessage());
 
         }
 
@@ -101,9 +101,19 @@ public class ProfileService {
                 responseStudentProfile.setEmail(student.getUser().getEmail());
                 responseStudentProfile.setLogin(student.getUser().getLogin());
                 responseStudentProfile.setPhoto(student.getUser().getPhoto());
-                responseStudentProfile.setCourseName(student.getGroup().getCourse().getName());
-                responseStudentProfile.setGroupName(student.getGroup().getName());
                 responseStudentProfile.setRoleName(student.getUser().getRole().getName());
+
+                if (student.getGroup() != null) {
+
+                    responseStudentProfile.setCourseName(student.getGroup().getCourse().getName());
+                    responseStudentProfile.setGroupName(student.getGroup().getName());
+
+                } else {
+
+                    responseStudentProfile.setCourseName(null);
+                    responseStudentProfile.setGroupName(null);
+
+                }
 
                 return ResponseEntity.ok(responseStudentProfile);
 
@@ -115,7 +125,7 @@ public class ProfileService {
 
         } catch (Exception e) {
 
-            return ResponseEntity.status(500).body("Произошла ошибка при получении профиля студента.");
+            return ResponseEntity.status(500).body("Произошла ошибка при получении профиля студента. " + e.getMessage());
         
         }
 
@@ -155,7 +165,7 @@ public class ProfileService {
 
         } catch (Exception e) {
 
-            return ResponseEntity.status(500).body("Произошла ошибка при получении профиля преподавателя.");
+            return ResponseEntity.status(500).body("Произошла ошибка при получении профиля преподавателя. " + e.getMessage());
 
         }
 
@@ -189,7 +199,7 @@ public class ProfileService {
 
         } catch (Exception e) {
 
-            return ResponseEntity.status(500).body("Произошла ошибка при получении профиля администратора.");
+            return ResponseEntity.status(500).body("Произошла ошибка при получении профиля администратора. " + e.getMessage());
 
         }
 

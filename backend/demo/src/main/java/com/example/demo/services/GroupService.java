@@ -1,10 +1,11 @@
-package com.example.demo.services.AdminServices;
+package com.example.demo.services;
 
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import com.example.demo.dtos.requestDto.RequestGroup;
+import com.example.demo.dtos.responseDto.ResponseGroup;
 import com.example.demo.dtos.responseDto.ResponseGroupList;
 import com.example.demo.entities.Course;
 import com.example.demo.entities.Group;
@@ -17,13 +18,13 @@ import jakarta.transaction.Transactional;
 
 
 @Service
-public class AdminGroupService {
+public class GroupService {
     
     GroupRepository groupRepository;
     CourseRepository courseRepository; 
     TeacherRepository teacherRepository;
 
-    public AdminGroupService(GroupRepository groupRepository, 
+    public GroupService(GroupRepository groupRepository, 
                             CourseRepository courseRepository, 
                             TeacherRepository teacherRepository) { 
 
@@ -49,9 +50,42 @@ public class AdminGroupService {
 
         } catch (Exception e) {
 
-            return ResponseEntity.status(500).body("Service Error!");
+            return ResponseEntity.status(500).body("Service Error! " + e.getMessage());
             
         }
+    }
+
+
+    //Получение группы по её id
+    @Transactional
+    public ResponseEntity<?> getGroupById(Integer id) {
+
+        try {
+
+            Group group = groupRepository.findById(id).orElse(null);
+
+            if (group != null) {
+
+                ResponseGroup responseGroup = new ResponseGroup();
+                responseGroup.setName(group.getName());
+                responseGroup.setCourseName(group.getCourse().getName());
+                responseGroup.setEndDate(group.getEndDate());
+                responseGroup.setStartDate(group.getStartDate());
+
+                return ResponseEntity.ok(responseGroup);
+
+            } else {
+
+                return ResponseEntity.status(404).body("Группа не найдена");
+
+            }
+
+        } catch (Exception e) {
+
+            return ResponseEntity.status(500).body("Ошибка получения группы " + e.getMessage());
+
+        }
+
     }
 
 
@@ -82,7 +116,7 @@ public class AdminGroupService {
 
         } catch (Exception e) {
 
-            return ResponseEntity.status(500).body("Service Error!");
+            return ResponseEntity.status(500).body("Service Error! " + e.getMessage());
         
         }
 
@@ -128,7 +162,7 @@ public class AdminGroupService {
 
         } catch (Exception e) {
 
-            return ResponseEntity.status(500).body("Service Error!");
+            return ResponseEntity.status(500).body("Service Error! " + e.getMessage());
 
         }
 
@@ -154,7 +188,7 @@ public class AdminGroupService {
 
         } catch (Exception e) {
 
-            return ResponseEntity.status(500).body("Service Error!");
+            return ResponseEntity.status(500).body("Service Error! " + e.getMessage());
 
         }
 

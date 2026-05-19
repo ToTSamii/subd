@@ -1,4 +1,4 @@
-package com.example.demo.controllers.AdminControllers;
+package com.example.demo.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -11,30 +11,38 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dtos.requestDto.RequestGroup;
-import com.example.demo.services.AdminServices.AdminGroupService;
+import com.example.demo.services.GroupService;
 
 import lombok.extern.slf4j.Slf4j;
 
 
 @RestController
-@RequestMapping("/api/admin/groups")
+@RequestMapping("/api/group")
 @Slf4j
-public class AdminGroupsController {
+public class GroupController {
 
-   private AdminGroupService adminGroupsService;
+   private GroupService groupsService;
 
    
-   public AdminGroupsController(AdminGroupService adminGroupsService) {
+   public GroupController(GroupService groupsService) {
 
-       this.adminGroupsService = adminGroupsService;
+       this.groupsService = groupsService;
 
    }
 
 
-   @GetMapping("/")
+   @GetMapping("/all")
    public ResponseEntity<?> getAllGroups() {
 
-       return adminGroupsService.getAllGroups();
+       return groupsService.getAllGroups();
+
+   }
+
+
+   @GetMapping("/{id}")
+   public ResponseEntity<?> getGroup(@PathVariable @NonNull Integer id) {
+
+       return groupsService.getGroupById(id);
 
    }
 
@@ -42,7 +50,7 @@ public class AdminGroupsController {
    @PostMapping("/")
    public ResponseEntity<?> addGroup(@RequestBody RequestGroup requestGroup) {
 
-       return adminGroupsService.addGroup(requestGroup);
+       return groupsService.addGroup(requestGroup);
 
    }
 
@@ -50,7 +58,7 @@ public class AdminGroupsController {
    @PutMapping("/{id}")
    public ResponseEntity<?> updateGroup(@PathVariable @NonNull Integer id, @RequestBody RequestGroup requestGroup) {
 
-      return adminGroupsService.updateGroup(id, requestGroup);
+      return groupsService.updateGroup(id, requestGroup);
 
    }
 
@@ -58,7 +66,7 @@ public class AdminGroupsController {
    @DeleteMapping("/{id}")
    public ResponseEntity<?> deleteGroup(@PathVariable @NonNull Integer id) {
 
-       return adminGroupsService.deleteGroup(id);
+       return groupsService.deleteGroup(id);
 
    }
 

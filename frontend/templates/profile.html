@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой профиль - IT-Обучение</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="navbar">
+                <div class="logo" id="logoLink">
+                    <i class="fas fa-laptop-code"></i>
+                    <span>IT-Обучение</span>
+                </div>
+                <div class="user-nav" id="userNav">
+                    <a href="index.html">Главная</a>
+                    <a href="schedule.html" id="scheduleLink">Расписание</a>
+                    <a href="#" id="progressLink">Успеваемость</a>
+                    <a href="#" id="groupLink">Группа</a>
+                    <a href="#" id="myCoursesLink">Мои курсы</a>
+                    <a href="#" id="usersLink" style="display: none;">Пользователи</a>
+                    <a href="#" id="coursesLink" style="display: none;">Курсы</a>
+                </div>
+                
+                <div id="authButtons" style="display: none;">
+                    <button class="btn-outline" id="loginBtn">Вход</button>
+                    <button class="btn-primary" id="registerBtn">Регистрация</button>
+                </div>
+                
+                <div id="userInfo">
+                    <div class="user-profile" id="userProfileClick">
+                        <div class="user-avatar" id="userAvatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span id="userName"></span>
+                        <button class="btn-outline" id="logoutBtn">Выйти</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="profile-main">
+        <div class="container">
+            <div id="loadingProfile" class="loading">Загрузка профиля...</div>
+            <div id="profileError" class="error" style="display: none;"></div>
+            
+            <div id="profileContent" class="profile-content" style="display: none;">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <img id="profilePhoto" src="" alt="Фото профиля">
+                        <div class="avatar-placeholder" id="avatarPlaceholder">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                    </div>
+                    <div class="profile-title">
+                        <h1 id="profileFullName"></h1>
+                        <p id="profileRole" class="role-badge"></p>
+                    </div>
+                </div>
+
+                <div class="profile-info-grid">
+                    <div class="info-card">
+                        <h3><i class="fas fa-user"></i> Личная информация</h3>
+                        <div class="info-row">
+                            <span class="info-label">Логин:</span>
+                            <span class="info-value" id="profileLogin"></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value" id="profileEmail"></span>
+                        </div>
+                        <div class="info-row" id="firstNameRow">
+                            <span class="info-label">Имя:</span>
+                            <span class="info-value" id="profileFirstName"></span>
+                        </div>
+                        <div class="info-row" id="lastNameRow">
+                            <span class="info-label">Фамилия:</span>
+                            <span class="info-value" id="profileLastName"></span>
+                        </div>
+                        <div class="info-row" id="middleNameRow">
+                            <span class="info-label">Отчество:</span>
+                            <span class="info-value" id="profileMiddleName"></span>
+                        </div>
+                        <div class="info-row" id="birthDateRow">
+                            <span class="info-label">Дата рождения:</span>
+                            <span class="info-value" id="profileBirthDate"></span>
+                        </div>
+                    </div>
+
+                    <div class="info-card" id="studentInfoCard" style="display: none;">
+                        <h3><i class="fas fa-graduation-cap"></i> Информация об обучении</h3>
+                        <div class="info-row">
+                            <span class="info-label">Курс:</span>
+                            <span class="info-value" id="profileCourse"></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Группа:</span>
+                            <span class="info-value" id="profileGroup"></span>
+                        </div>
+                    </div>
+
+                    <div class="info-card" id="teacherInfoCard" style="display: none;">
+                        <h3><i class="fas fa-chalkboard-user"></i> Информация о преподавателе</h3>
+                        <div class="info-row">
+                            <span class="info-label">Квалификация:</span>
+                            <span class="info-value" id="profileQualification"></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Дата найма:</span>
+                            <span class="info-value" id="profileHireDate"></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Телефон:</span>
+                            <span class="info-value" id="profilePhone"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <button class="btn-primary" id="editProfileBtn" style="display: none;">Редактировать профиль</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/profile.js"></script>
+</body>
+</html>

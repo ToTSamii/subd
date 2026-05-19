@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.services.CourseService;
@@ -31,7 +32,7 @@ public class CoursesController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getCourseById(Integer id) {
+    public ResponseEntity<?> getCourseById(@PathVariable Integer id) {
 
         return courseService.getCourseById(id);
 

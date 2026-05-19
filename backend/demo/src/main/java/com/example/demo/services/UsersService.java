@@ -1,4 +1,4 @@
-package com.example.demo.services.AdminServices;
+package com.example.demo.services;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +14,11 @@ import com.example.demo.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 
 @Service
-public class AdminUsersService {
+public class UsersService {
 
     UserRepository userRepository; 
 
-    public AdminUsersService(UserRepository userRepository) { 
+    public UsersService(UserRepository userRepository) { 
 
         this.userRepository = userRepository;
 

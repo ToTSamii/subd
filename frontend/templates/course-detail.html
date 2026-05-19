@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Курс - IT-Обучение</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <style>
+        .course-detail {
+            padding: 40px 0 80px;
+        }
+        
+        .course-container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .course-header {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #eef2f8;
+        }
+        
+        .course-header h1 {
+            font-size: 2.2rem;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+        
+        .course-meta {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+        }
+        
+        .meta-item i {
+            color: #2563eb;
+            font-size: 1.1rem;
+        }
+        
+        .price-large {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+        
+        .course-description {
+            margin-bottom: 32px;
+        }
+        
+        .course-description h3 {
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            color: #1e293b;
+        }
+        
+        .course-description p {
+            color: #475569;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+        
+        .course-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .info-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 20px;
+        }
+        
+        .info-card h4 {
+            font-size: 1rem;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+        
+        .info-card .info-value {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .course-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 2px solid #eef2f8;
+        }
+        
+        .btn-large {
+            padding: 12px 32px;
+            font-size: 1rem;
+        }
+        
+        .loading-detail {
+            text-align: center;
+            padding: 80px;
+        }
+        
+        .loading-detail i {
+            font-size: 3rem;
+            color: #2563eb;
+            margin-bottom: 16px;
+        }
+        
+        .error-detail {
+            text-align: center;
+            padding: 60px;
+            background: #fee2e2;
+            border-radius: 16px;
+            color: #dc2626;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            color: #2563eb;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-bottom: 24px;
+            padding: 8px 0;
+        }
+        
+        .back-button:hover {
+            color: #1d4ed8;
+        }
+        
+        @media (max-width: 768px) {
+            .course-container {
+                padding: 24px;
+            }
+            .course-header h1 {
+                font-size: 1.5rem;
+            }
+            .price-large {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="navbar">
+                <div class="logo" id="logoLink">
+                    <i class="fas fa-laptop-code"></i>
+                    <span>IT-Обучение</span>
+                </div>
+                <div class="user-nav" id="userNav">
+                    <a href="index.html">Главная</a>
+                    <a href="schedule.html" id="scheduleLink">Расписание</a>
+                    <a href="#" id="progressLink">Успеваемость</a>
+                    <a href="#" id="groupLink">Группа</a>
+                    <a href="#" id="myCoursesLink">Мои курсы</a>
+                    <a href="#" id="usersLink" style="display: none;">Пользователи</a>
+                    <a href="#" id="coursesLink" style="display: none;">Курсы</a>
+                </div>
+                    
+                <div id="authButtons">
+                    <button class="btn-outline" id="loginBtn">Вход</button>
+                    <button class="btn-primary" id="registerBtn">Регистрация</button>
+                </div>
+                
+                <div id="userInfo" style="display: none;">
+                    <div class="user-profile" id="userProfileClick">
+                        <div class="user-avatar" id="userAvatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span id="userName"></span>
+                        <button class="btn-outline" id="logoutBtn">Выйти</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container course-detail">
+            <button class="back-button" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Назад к курсам
+            </button>
+            
+            <div id="loadingDetail" class="loading-detail">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Загрузка курса...</p>
+            </div>
+            
+            <div id="errorDetail" class="error-detail" style="display: none;"></div>
+            
+            <div id="courseContainer" class="course-container" style="display: none;">
+                <div class="course-header">
+                    <h1 id="courseName"></h1>
+                    <div class="course-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="courseDuration"></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-tag"></i>
+                            <span id="coursePrice" class="price-large"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="course-description">
+                    <h3><i class="fas fa-book-open"></i> О курсе</h3>
+                    <p id="courseDescription"></p>
+                </div>
+                
+                <div class="course-info-grid">
+                    <div class="info-card">
+                        <h4><i class="fas fa-hourglass-half"></i> Длительность</h4>
+                        <div class="info-value" id="durationDetail"></div>
+                    </div>
+                    <div class="info-card">
+                        <h4><i class="fas fa-ruble-sign"></i> Стоимость</h4>
+                        <div class="info-value" id="priceDetail"></div>
+                    </div>
+                    <div class="info-card">
+                        <h4><i class="fas fa-chalkboard"></i> Формат</h4>
+                        <div class="info-value">Очно / Дистанционно</div>
+                    </div>
+                </div>
+                
+                <div class="course-actions">
+                    <button class="btn-primary btn-large" id="enrollBtn">
+                        <i class="fas fa-graduation-cap"></i> Записаться на курс
+                    </button>
+                    <button class="btn-outline btn-large" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i> Вернуться
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Модальное окно входа -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Вход</h2>
+            <div id="loginMessage" class="form-message" style="display: none;"></div>
+            <form id="loginForm">
+                <input type="text" id="loginUsername" placeholder="Логин" required>
+                <input type="password" id="loginPassword" placeholder="Пароль" required>
+                <button type="submit" class="btn-primary">Войти</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/course-detail.js"></script>
+</body>
+</html>
