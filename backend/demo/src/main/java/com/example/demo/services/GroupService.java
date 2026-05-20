@@ -193,4 +193,34 @@ public class GroupService {
         }
 
     }
+
+
+    //Получение групп по id курса
+    @Transactional
+    public ResponseEntity<?> getGroupsByCourse(Integer courseId) {
+
+        try {
+
+            Course course = courseRepository.findById(courseId).orElse(null);
+
+            if (course != null) {
+
+                List<Group> groups = groupRepository.findByCourseCode(courseId);
+
+                return ResponseEntity.ok(groups);
+
+            } else {
+
+                return ResponseEntity.status(404).body("Группа не найдена!");
+
+            }
+
+        } catch (Exception e) {
+
+            return ResponseEntity.status(500).body("Ошибка получения курса по группе: " + e.getMessage());
+
+        }
+
+    }
+
 }

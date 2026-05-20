@@ -11,5 +11,6 @@ import com.example.demo.entities.Group;
 public interface GroupRepository extends JpaRepository<Group, Integer> {
 
     List<Group> findByTeacherCode(Integer code);
+    List<Group> findByCourseCode(Integer code);
 
 }

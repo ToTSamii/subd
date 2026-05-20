@@ -12,6 +12,7 @@ const courseDescription = document.getElementById('courseDescription');
 const durationDetail = document.getElementById('durationDetail');
 const priceDetail = document.getElementById('priceDetail');
 const enrollBtn = document.getElementById('enrollBtn');
+const enrollSection = document.getElementById('enrollSection');
 const logoLink = document.getElementById('logoLink');
 const loginBtn = document.getElementById('loginBtn');
 const registerBtn = document.getElementById('registerBtn');
@@ -24,15 +25,30 @@ const userProfileClick = document.getElementById('userProfileClick');
 const loginModal = document.getElementById('loginModal');
 const registerModal = document.getElementById('registerModal');
 
+// Модальное окно выбора группы
+const groupModal = document.getElementById('groupModal');
+const groupList = document.getElementById('groupList');
+const modalCourseName = document.getElementById('modalCourseName');
+const confirmEnrollBtn = document.getElementById('confirmEnrollBtn');
+const cancelGroupBtn = document.getElementById('cancelGroupBtn');
+const closeGroupModalBtn = document.querySelector('#groupModal .close-modal');
+
 // Текущий курс и пользователь
 let currentCourse = null;
 let currentUser = null;
+let currentUserRole = null;
+let currentUserId = null;
+let currentCourseId = null;
+let currentCourseName = null;
+let availableGroups = [];
+let selectedGroupId = null;
 
 // Получить ID курса из URL
 function getCourseId() {
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
     console.log('ID курса из URL:', id);
+    currentCourseId = id;
     return id;
 }
 
@@ -111,6 +127,11 @@ async function loadUserData() {
         if (response.ok) {
             const userData = await response.json();
             currentUser = userData;
+            currentUserRole = getUserRole(userData);
+            currentUserId = userData.userId || userData.code || userData.id;
+            console.log('Текущий пользователь:', currentUser);
+            console.log('Роль:', currentUserRole);
+            console.log('ID пользователя:', currentUserId);
             return userData;
         } else {
             localStorage.removeItem('token');
@@ -144,17 +165,35 @@ async function checkAuth() {
                 }
             }
             
-            const role = getUserRole(userData);
-            updateNavigationByRole(role);
+            updateNavigationByRole(currentUserRole);
+            
+            // Показываем кнопку записи только для студентов
+            if (enrollSection) {
+                if (currentUserRole === 'Студент' || currentUserRole === 'STUDENT' || currentUserRole === 'ROLE_STUDENT') {
+                    enrollSection.style.display = 'block';
+                } else {
+                    enrollSection.style.display = 'none';
+                }
+            }
         } else {
             if (authButtons) authButtons.style.display = 'flex';
             if (userInfo) userInfo.style.display = 'none';
             updateNavigationByRole(null);
+            
+            // Неавторизованный - показываем кнопку записи
+            if (enrollSection) {
+                enrollSection.style.display = 'block';
+            }
         }
     } else {
         if (authButtons) authButtons.style.display = 'flex';
         if (userInfo) userInfo.style.display = 'none';
         updateNavigationByRole(null);
+        
+        // Неавторизованный - показываем кнопку записи
+        if (enrollSection) {
+            enrollSection.style.display = 'block';
+        }
     }
 }
 
@@ -184,7 +223,6 @@ async function loadCourseDetail() {
         const data = await response.json();
         console.log('Данные курса:', data);
         
-        // Обработка разных форматов ответа
         let course = null;
         if (data.course) {
             course = data.course;
@@ -199,6 +237,7 @@ async function loadCourseDetail() {
         }
         
         currentCourse = course;
+        currentCourseName = course.name || course.title;
         renderCourseDetail(course);
         
     } catch (error) {
@@ -218,7 +257,6 @@ function renderCourseDetail(course) {
     courseName.textContent = title;
     courseDescription.textContent = description;
     
-    // Длительность
     let durationText = 'Не указана';
     if (duration && duration > 0) {
         if (duration >= 40) {
@@ -231,7 +269,6 @@ function renderCourseDetail(course) {
     courseDuration.textContent = durationText;
     durationDetail.textContent = durationText;
     
-    // Стоимость
     let priceText = 'Бесплатно';
     let priceValue = '0 ₽';
     if (cost && cost > 0) {
@@ -293,8 +330,195 @@ function showTemporaryMessage(message, type) {
     }, 3000);
 }
 
-// Запись на курс
-async function enrollInCourse() {
+// Загрузка групп для текущего курса через эндпоинт /group/course/{id}
+async function loadCourseGroups() {
+    const courseId = currentCourseId;
+    
+    if (!courseId) {
+        console.error('ID курса не указан');
+        showTemporaryMessage('Ошибка: ID курса не указан', 'error');
+        renderEmptyGroupList();
+        return;
+    }
+    
+    try {
+        const token = localStorage.getItem('token');
+        const headers = {};
+        if (token) {
+            const authHeader = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+            headers['Authorization'] = authHeader;
+        }
+        
+        console.log(`Загрузка групп для курса ID: ${courseId}`);
+        
+        // Используем эндпоинт /group/course/{id}
+        const response = await fetch(`${API_URL}/group/course/${courseId}`, {
+            headers: headers
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Ответ сервера (группы курса):', data);
+            
+            // Обрабатываем ответ в разных форматах
+            let groups = [];
+            if (data.groups && Array.isArray(data.groups)) {
+                groups = data.groups;
+            } else if (data.courseGroups && Array.isArray(data.courseGroups)) {
+                groups = data.courseGroups;
+            } else if (data.responseGroups && Array.isArray(data.responseGroups)) {
+                groups = data.responseGroups;
+            } else if (Array.isArray(data)) {
+                groups = data;
+            }
+            
+            // Если groups пустой, возможно данные в другом поле
+            if (groups.length === 0 && data.groupList) {
+                groups = data.groupList;
+            }
+            
+            availableGroups = groups;
+            console.log('Группы для курса:', availableGroups);
+            
+            renderGroupList();
+        } else {
+            console.error('Ошибка загрузки групп, статус:', response.status);
+            const errorText = await response.text();
+            console.error('Текст ошибки:', errorText);
+            showTemporaryMessage('Ошибка загрузки списка групп', 'error');
+            renderEmptyGroupList();
+        }
+    } catch (error) {
+        console.error('Error loading groups:', error);
+        showTemporaryMessage('Ошибка загрузки списка групп', 'error');
+        renderEmptyGroupList();
+    }
+}
+
+function renderGroupList() {
+    groupList.innerHTML = '';
+    
+    if (!availableGroups || availableGroups.length === 0) {
+        groupList.innerHTML = '<div class="no-groups"><i class="fas fa-info-circle"></i><p>Нет доступных групп для этого курса</p></div>';
+        if (confirmEnrollBtn) confirmEnrollBtn.disabled = true;
+        return;
+    }
+    
+    if (confirmEnrollBtn) confirmEnrollBtn.disabled = false;
+    
+    availableGroups.forEach(group => {
+        // Получаем ID группы (может быть в разных полях)
+        const groupId = group.id || group.groupId || group.code;
+        const groupName = group.name || 'Без названия';
+        const startDate = group.startDate ? new Date(group.startDate).toLocaleDateString('ru-RU') : null;
+        const endDate = group.endDate ? new Date(group.endDate).toLocaleDateString('ru-RU') : null;
+        const courseNameGroup = group.courseName || '';
+        
+        let dateText = '';
+        if (startDate && endDate) {
+            dateText = `${startDate} - ${endDate}`;
+        } else if (startDate) {
+            dateText = `с ${startDate}`;
+        } else if (endDate) {
+            dateText = `по ${endDate}`;
+        }
+        
+        const groupItem = document.createElement('div');
+        groupItem.className = 'group-item';
+        groupItem.setAttribute('data-group-id', groupId);
+        groupItem.setAttribute('data-group-name', groupName);
+        
+        groupItem.innerHTML = `
+            <div class="group-radio">
+                <input type="radio" name="selectedGroup" value="${groupId}" id="group_${groupId}">
+            </div>
+            <div class="group-info">
+                <div class="group-name">${escapeHtml(groupName)}</div>
+                <div class="group-details">
+                    ${courseNameGroup ? escapeHtml(courseNameGroup) : ''}
+                    ${dateText ? ` | ${escapeHtml(dateText)}` : ''}
+                </div>
+            </div>
+        `;
+        
+        const radio = groupItem.querySelector('input[type="radio"]');
+        radio.addEventListener('change', () => {
+            selectedGroupId = radio.value;
+            document.querySelectorAll('.group-item').forEach(item => item.classList.remove('selected'));
+            groupItem.classList.add('selected');
+        });
+        
+        groupItem.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'INPUT') {
+                radio.checked = true;
+                selectedGroupId = radio.value;
+                document.querySelectorAll('.group-item').forEach(item => item.classList.remove('selected'));
+                groupItem.classList.add('selected');
+            }
+        });
+        
+        groupList.appendChild(groupItem);
+    });
+}
+
+function renderEmptyGroupList() {
+    groupList.innerHTML = '<div class="no-groups"><i class="fas fa-exclamation-triangle"></i><p>Ошибка загрузки списка групп</p></div>';
+    if (confirmEnrollBtn) confirmEnrollBtn.disabled = true;
+}
+
+// Обновление группы студента
+async function updateStudentGroup(groupId) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        showTemporaryMessage('Необходимо войти в систему', 'error');
+        openModal(loginModal);
+        return;
+    }
+    
+    if (!currentUserId) {
+        showTemporaryMessage('Ошибка: ID пользователя не найден', 'error');
+        return;
+    }
+    
+    const authHeader = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+    
+    try {
+        console.log('Отправка запроса на обновление:', {
+            userId: currentUserId,
+            groupId: groupId
+        });
+        
+        const response = await fetch(`${API_URL}/student/`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': authHeader,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: currentUserId,
+                groupId: groupId
+            })
+        });
+        
+        if (response.ok) {
+            showTemporaryMessage('Вы успешно записались на курс!', 'success');
+            closeGroupModal();
+        } else {
+            let errorData;
+            try {
+                errorData = await response.json();
+            } catch(e) {}
+            console.error('Ошибка сервера:', errorData);
+            showTemporaryMessage(errorData?.message || 'Ошибка при записи на курс', 'error');
+        }
+    } catch (error) {
+        console.error('Error updating student group:', error);
+        showTemporaryMessage('Ошибка соединения с сервером', 'error');
+    }
+}
+
+// Обработчик нажатия на кнопку записи
+function onEnrollClick() {
     const token = localStorage.getItem('token');
     
     if (!token) {
@@ -303,20 +527,56 @@ async function enrollInCourse() {
         return;
     }
     
-    if (!currentCourse) {
-        showTemporaryMessage('Ошибка: курс не загружен', 'error');
+    if (currentUserRole !== 'Студент' && currentUserRole !== 'STUDENT' && currentUserRole !== 'ROLE_STUDENT') {
+        showTemporaryMessage('Запись на курсы доступна только студентам', 'error');
         return;
     }
     
-    const courseId = getCourseId();
-    showTemporaryMessage('Функция записи на курс будет доступна в следующей версии', 'success');
+    if (currentCourse) {
+        const courseTitle = currentCourse.name || currentCourse.title || 'Курс';
+        if (modalCourseName) modalCourseName.textContent = courseTitle;
+        loadCourseGroups();
+        openModal(groupModal);
+    } else {
+        showTemporaryMessage('Ошибка: данные курса не загружены', 'error');
+    }
 }
 
-// Навигация
+// Функции модальных окон
+function openModal(modal) {
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeModal(modal) {
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+}
+
+function closeGroupModal() {
+    closeModal(groupModal);
+    selectedGroupId = null;
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 function goBack() {
     window.location.href = 'index.html';
 }
 
+// Обработчики событий
 if (logoLink) {
     logoLink.addEventListener('click', () => {
         window.location.href = 'index.html';
@@ -339,40 +599,27 @@ if (logoutBtn) {
     });
 }
 
-// Модальные окна
-function openModal(modal) {
-    if (modal) {
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-    }
+if (enrollBtn) {
+    enrollBtn.addEventListener('click', onEnrollClick);
 }
 
-function closeModal(modal) {
-    if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-    }
+if (confirmEnrollBtn) {
+    confirmEnrollBtn.addEventListener('click', () => {
+        if (selectedGroupId) {
+            updateStudentGroup(selectedGroupId);
+        } else {
+            showTemporaryMessage('Выберите группу', 'error');
+        }
+    });
 }
 
-if (loginBtn) {
-    loginBtn.onclick = () => openModal(loginModal);
+if (cancelGroupBtn) {
+    cancelGroupBtn.addEventListener('click', closeGroupModal);
 }
 
-if (registerBtn) {
-    registerBtn.onclick = () => openModal(registerModal);
+if (closeGroupModalBtn) {
+    closeGroupModalBtn.addEventListener('click', closeGroupModal);
 }
-
-document.querySelectorAll('.close').forEach(close => {
-    close.onclick = () => {
-        closeModal(loginModal);
-        closeModal(registerModal);
-    };
-});
-
-window.onclick = (e) => {
-    if (e.target === loginModal) closeModal(loginModal);
-    if (e.target === registerModal) closeModal(registerModal);
-};
 
 // Форма входа
 const loginForm = document.getElementById('loginForm');
@@ -439,10 +686,120 @@ if (loginForm) {
     });
 }
 
-// Кнопка записи
-if (enrollBtn) {
-    enrollBtn.addEventListener('click', enrollInCourse);
+// Форма регистрации
+const registerForm = document.getElementById('registerForm');
+const registerMessage = document.getElementById('registerMessage');
+
+if (registerForm) {
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const login = document.getElementById('regLogin');
+        const email = document.getElementById('regEmail');
+        const password = document.getElementById('regPassword');
+        const passwordConfirm = document.getElementById('regPasswordConfirm');
+        const firstName = document.getElementById('regFirstName');
+        const lastName = document.getElementById('regLastName');
+        const middleName = document.getElementById('regMiddleName');
+        const birthDate = document.getElementById('regBirthDate');
+        const photo = document.getElementById('regPhoto');
+        
+        const loginValue = login ? login.value.trim() : '';
+        const emailValue = email ? email.value.trim() : '';
+        const passwordValue = password ? password.value : '';
+        const passwordConfirmValue = passwordConfirm ? passwordConfirm.value : '';
+        const firstNameValue = firstName ? firstName.value.trim() : '';
+        const lastNameValue = lastName ? lastName.value.trim() : '';
+        const middleNameValue = middleName ? middleName.value.trim() : '';
+        const birthDateValue = birthDate ? birthDate.value : '';
+        const photoValue = photo ? photo.value.trim() : '';
+        
+        if (registerMessage) {
+            registerMessage.style.display = 'none';
+        }
+        
+        if (passwordValue !== passwordConfirmValue) {
+            if (registerMessage) {
+                registerMessage.textContent = 'Пароли не совпадают';
+                registerMessage.className = 'form-message error';
+                registerMessage.style.display = 'block';
+            }
+            return;
+        }
+        
+        if (passwordValue.length < 6) {
+            if (registerMessage) {
+                registerMessage.textContent = 'Пароль должен содержать минимум 6 символов';
+                registerMessage.className = 'form-message error';
+                registerMessage.style.display = 'block';
+            }
+            return;
+        }
+        
+        const registerData = {
+            login: loginValue,
+            password: passwordValue,
+            email: emailValue,
+            photo: photoValue || null,
+            firstName: firstNameValue,
+            lastName: lastNameValue || null,
+            middleName: middleNameValue || null,
+            birthDate: birthDateValue ? new Date(birthDateValue).toISOString() : null
+        };
+        
+        try {
+            const response = await fetch(`${API_URL}/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(registerData)
+            });
+            
+            let data = {};
+            try {
+                data = await response.json();
+            } catch (e) {}
+            
+            if (response.ok) {
+                if (registerModal) registerModal.style.display = 'none';
+                if (registerForm) registerForm.reset();
+                showTemporaryMessage('Регистрация успешна! Теперь войдите.', 'success');
+            } else {
+                if (registerMessage) {
+                    registerMessage.textContent = data.message || 'Ошибка регистрации';
+                    registerMessage.className = 'form-message error';
+                    registerMessage.style.display = 'block';
+                }
+            }
+        } catch (error) {
+            if (registerMessage) {
+                registerMessage.textContent = 'Ошибка соединения с сервером';
+                registerMessage.className = 'form-message error';
+                registerMessage.style.display = 'block';
+            }
+        }
+    });
 }
+
+if (loginBtn) {
+    loginBtn.onclick = () => openModal(loginModal);
+}
+
+if (registerBtn) {
+    registerBtn.onclick = () => openModal(registerModal);
+}
+
+document.querySelectorAll('.close').forEach(close => {
+    close.onclick = () => {
+        closeModal(loginModal);
+        closeModal(registerModal);
+    };
+});
+
+window.onclick = (e) => {
+    if (e.target === loginModal) closeModal(loginModal);
+    if (e.target === registerModal) closeModal(registerModal);
+    if (e.target === groupModal) closeGroupModal();
+};
 
 // Инициализация
 async function init() {

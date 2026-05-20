@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.requestDto.RequestAddMark;
+import com.example.demo.dtos.requestDto.RequestStudentGroup;
 import com.example.demo.dtos.responseDto.ResponseGroup;
 import com.example.demo.dtos.responseDto.ResponseStudent.ResponseAttendance;
 import com.example.demo.dtos.responseDto.ResponseStudent.ResponseAttendanceList;
@@ -15,6 +16,7 @@ import com.example.demo.dtos.responseDto.ResponseStudent.ResponseScheldue;
 import com.example.demo.dtos.responseDto.ResponseStudent.ResponseScheldues;
 import com.example.demo.entities.Attendance;
 import com.example.demo.entities.Course;
+import com.example.demo.entities.Group;
 import com.example.demo.entities.Schedule;
 import com.example.demo.entities.Student;
 import com.example.demo.repositories.AttendanceRepository;
@@ -225,6 +227,37 @@ public class StudentService {
         } catch (Exception e) {
 
             return ResponseEntity.status(500).body("Ошибка добавления отметки студенту");
+
+        }
+
+    }
+
+
+    //Редактирование группы студента по id пользователя и id группы
+    @Transactional
+    public ResponseEntity<?> updateStudent(RequestStudentGroup requestStudentGroup) {
+        
+        try {
+
+            Student student = studentRepository.findByUser_UserId(requestStudentGroup.getUserId()).orElse(null);
+            Group group = groupRepository.findById(requestStudentGroup.getGroupId()).orElse(null);
+
+            if (student != null && group != null) {
+
+                student.setGroup(group);
+                student = studentRepository.save(student);
+
+                return ResponseEntity.ok(student);
+                
+            } else {
+
+                return ResponseEntity.status(404).body("Студент или группа не найдены");
+
+            }
+
+        } catch (Exception e) {
+
+            return ResponseEntity.status(500).body("Ошибка при редактировании группы студента: " + e.getMessage());
 
         }
 

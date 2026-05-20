@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.requestDto.RequestCourse;
+import com.example.demo.dtos.requestDto.RequestGroup;
 import com.example.demo.dtos.requestDto.RequestUser;
 import com.example.demo.services.CourseService;
+import com.example.demo.services.GroupService;
 import com.example.demo.services.ScheduleService;
 import com.example.demo.services.UsersService;
 
@@ -27,14 +29,17 @@ public class AdminController {
     private ScheduleService scheduleService;
     private CourseService courseService; 
     private UsersService usersService;
+    private GroupService groupService;
 
     public AdminController(ScheduleService scheduleService,
                             CourseService courseService, 
-                            UsersService usersService) {   
+                            UsersService usersService,
+                            GroupService groupService) {   
 
         this.scheduleService = scheduleService;
         this.courseService = courseService;
         this.usersService = usersService;
+        this.groupService = groupService;
 
     }
 
@@ -107,5 +112,39 @@ public class AdminController {
        return usersService.deleteUser(id);
 
     }
-    
+
+
+    //Группы
+
+    @GetMapping("/group/{id}")
+    public ResponseEntity<?> getGroup(@PathVariable Integer id) {
+
+        return groupService.getGroupById(id);
+
+    }
+
+
+    @PostMapping("/group/")
+    public ResponseEntity<?> addGroup(@RequestBody RequestGroup requestGroup) {
+
+        return groupService.addGroup(requestGroup);
+
+    }
+
+
+    @PutMapping("/group/{id}")
+    public ResponseEntity<?> updateGroup(@PathVariable Integer id, @RequestBody RequestGroup requestGroup) {
+
+        return groupService.updateGroup(id, requestGroup);
+
+    }
+
+
+    @DeleteMapping("/group/{id}")
+    public ResponseEntity<?> deleteGroup(@PathVariable Integer id) {
+
+        return groupService.deleteGroup(id);
+
+    }
+        
 }
