@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dtos.requestDto.RequestAddMark;
 import com.example.demo.dtos.requestDto.RequestStudentGroup;
 import com.example.demo.dtos.responseDto.ResponseGroup;
-import com.example.demo.dtos.responseDto.ResponseStudent.ResponseAttendance;
-import com.example.demo.dtos.responseDto.ResponseStudent.ResponseAttendanceList;
 import com.example.demo.dtos.responseDto.ResponseStudent.ResponseScheldue;
 import com.example.demo.dtos.responseDto.ResponseStudent.ResponseScheldues;
 import com.example.demo.entities.Attendance;
@@ -117,7 +115,6 @@ public class StudentService {
             if (student != null) {
 
                 List<Attendance> attendanceList = attendanceRepository.findByStudentCode(student.getCode());
-                List<ResponseAttendance> responsesAttendances = new ArrayList<>();
 
                 if (attendanceList.isEmpty()) {
 
@@ -125,21 +122,7 @@ public class StudentService {
 
                 }
 
-                for (Attendance attendance : attendanceList) {
-
-                    ResponseAttendance responseAttendance = new ResponseAttendance();
-                    responseAttendance.setGrade(attendance.getGrade());
-                    responseAttendance.setDate(attendance.getDate());
-                    responseAttendance.setCourseName(attendance.getCourseNameDenorm());
-
-                    responsesAttendances.add(responseAttendance);
-
-                }
-
-                ResponseAttendanceList responseAttendanceList = new ResponseAttendanceList();
-                responseAttendanceList.setAttendances(responsesAttendances);
-
-                return ResponseEntity.ok(responseAttendanceList);
+                return ResponseEntity.ok(attendanceList);
 
             } else {
 
@@ -258,6 +241,35 @@ public class StudentService {
         } catch (Exception e) {
 
             return ResponseEntity.status(500).body("Ошибка при редактировании группы студента: " + e.getMessage());
+
+        }
+
+    }
+
+
+    //Получение студентов по id группы
+    @Transactional
+    public ResponseEntity<?> getStudentsByGroup(Integer idGroup) {
+
+        try {
+
+            Group group = groupRepository.findById(idGroup).orElse(null);
+
+            if (group != null) {
+
+                List<Student> studentList = studentRepository.findByGroupId(idGroup);
+                
+                return ResponseEntity.ok(studentList);
+
+            } else {
+
+                return ResponseEntity.status(404).body("Группа не найдена!");
+
+            }
+
+        } catch (Exception e) {
+
+            return ResponseEntity.status(500).body("Ошибка получения студентов по id группы " + e.getMessage());
 
         }
 

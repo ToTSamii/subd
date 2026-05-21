@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Расписание - IT-Обучение</title>
+    <title>Успеваемость - IT-Обучение</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../static/css/style.css">
     <style>
-        .schedule-container {
+        .attendance-container {
             background: white;
             border-radius: 24px;
             padding: 32px;
@@ -16,8 +16,7 @@
             margin-bottom: 30px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.05);
         }
-        
-        .schedule-header {
+        .attendance-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -25,18 +24,15 @@
             flex-wrap: wrap;
             gap: 16px;
         }
-        
-        .schedule-title {
+        .attendance-title {
             font-size: 1.5rem;
             font-weight: 600;
             color: #1e293b;
         }
-        
-        .schedule-title i {
+        .attendance-title i {
             color: #2563eb;
             margin-right: 10px;
         }
-        
         .role-badge {
             background: #e0e7ff;
             color: #4338ca;
@@ -45,38 +41,74 @@
             font-size: 0.85rem;
             font-weight: 600;
         }
-        
-        .btn-add {
+        .teacher-panel {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .teacher-panel h3 {
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            color: #1e293b;
+        }
+        .form-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: white;
+        }
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+        .btn-add-mark {
             background: #2563eb;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 24px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 20px;
+            height: 42px;
         }
-        
-        .btn-add:hover {
+        .btn-add-mark:hover {
             background: #1d4ed8;
         }
-        
-        .schedule-table {
+        .marks-table {
             width: 100%;
             border-collapse: collapse;
         }
-        
-        .schedule-table th,
-        .schedule-table td {
+        .marks-table th,
+        .marks-table td {
             padding: 14px 16px;
             text-align: left;
             border-bottom: 1px solid #e2e8f0;
         }
-        
-        .schedule-table th {
+        .marks-table th {
             background: #f8fafc;
             font-weight: 600;
             color: #475569;
@@ -84,16 +116,35 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
-        .schedule-table tr:hover {
+        .marks-table tr:hover {
             background: #f8fafc;
         }
-        
+        .grade-value {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .grade-good .grade-value {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .grade-normal .grade-value {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+        .grade-bad .grade-value {
+            background: #fee2e2;
+            color: #991b1b;
+        }
         .action-buttons {
             display: flex;
             gap: 8px;
         }
-        
         .btn-edit {
             background: #eab308;
             color: white;
@@ -103,7 +154,9 @@
             cursor: pointer;
             font-size: 0.8rem;
         }
-        
+        .btn-edit:hover {
+            background: #ca8a04;
+        }
         .btn-delete {
             background: #ef4444;
             color: white;
@@ -113,37 +166,27 @@
             cursor: pointer;
             font-size: 0.8rem;
         }
-        
-        .btn-edit:hover {
-            background: #ca8a04;
-        }
-        
         .btn-delete:hover {
             background: #dc2626;
         }
-        
         .empty-state {
             text-align: center;
             padding: 60px 20px;
             color: #64748b;
         }
-        
         .empty-state i {
             font-size: 3rem;
             margin-bottom: 16px;
             opacity: 0.5;
         }
-        
         .loading-spinner {
             text-align: center;
             padding: 60px;
         }
-        
         .loading-spinner i {
             font-size: 2rem;
             color: #2563eb;
         }
-        
         .error-message {
             background: #fee2e2;
             color: #dc2626;
@@ -151,7 +194,13 @@
             border-radius: 12px;
             text-align: center;
         }
+        .empty-message {
+            text-align: center;
+            color: #94a3b8;
+            padding: 40px;
+        }
         
+        /* Модальное окно */
         .modal {
             display: none;
             position: fixed;
@@ -162,44 +211,33 @@
             height: 100%;
             background: rgba(0,0,0,0.5);
         }
-        
         .modal-content {
             background: white;
             margin: 100px auto;
             padding: 32px;
             width: 90%;
-            max-width: 500px;
+            max-width: 400px;
             border-radius: 16px;
+            position: relative;
         }
-        
         .modal-content h3 {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             font-size: 1.3rem;
         }
-        
-        .modal-content input,
-        .modal-content select {
+        .modal-content input {
             width: 100%;
             padding: 10px 12px;
             margin-bottom: 16px;
             border: 1px solid #cbd5e1;
             border-radius: 8px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
-        
-        .modal-content input:focus,
-        .modal-content select:focus {
-            outline: none;
-            border-color: #2563eb;
-        }
-        
         .modal-buttons {
             display: flex;
             gap: 12px;
             justify-content: flex-end;
-            margin-top: 16px;
+            margin-top: 20px;
         }
-        
         .close-modal {
             position: absolute;
             right: 20px;
@@ -208,21 +246,32 @@
             cursor: pointer;
             color: #64748b;
         }
-        
         .close-modal:hover {
             color: #1e293b;
         }
+        .course-name {
+            background: #f1f5f9;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            color: #475569;
+        }
         
         @media (max-width: 768px) {
-            .schedule-container {
+            .attendance-container {
                 padding: 16px;
                 overflow-x: auto;
             }
-            .schedule-table {
+            .marks-table {
                 font-size: 0.85rem;
             }
-            .action-buttons {
+            .form-row {
                 flex-direction: column;
+            }
+            .btn-add-mark {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -244,7 +293,6 @@
                     <a href="#" id="usersLink" style="display: none;">Пользователи</a>
                     <a href="#" id="coursesLink" style="display: none;">Курсы</a>
                 </div>
-                
                 <div id="userInfo">
                     <div class="user-profile" id="userProfileClick">
                         <div class="user-avatar" id="userAvatar">
@@ -260,68 +308,91 @@
 
     <main class="main-content">
         <div class="container">
-            <div class="schedule-container">
-                <div class="schedule-header">
-                    <div class="schedule-title">
-                        <i class="fas fa-calendar-alt"></i> Расписание занятий
+            <div class="attendance-container">
+                <div class="attendance-header">
+                    <div class="attendance-title">
+                        <i class="fas fa-chart-line"></i> Успеваемость
                     </div>
                     <div class="role-badge" id="roleBadge">Загрузка...</div>
                 </div>
                 
-                <div id="addButtonContainer" style="display: none;">
-                    <button class="btn-add" id="addScheduleBtn">
-                        <i class="fas fa-plus"></i> Добавить занятие
-                    </button>
+                <div id="teacherPanel" class="teacher-panel" style="display: none;">
+                    <h3><i class="fas fa-plus-circle"></i> Поставить оценку</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Группа</label>
+                            <select id="groupSelect">
+                                <option value="">Выберите группу</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Студент</label>
+                            <select id="studentSelect">
+                                <option value="">Сначала выберите группу</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Оценка (2-5)</label>
+                            <input type="number" id="gradeInput" min="2" max="5" step="1" placeholder="Оценка">
+                        </div>
+                        <button class="btn-add-mark" id="addMarkBtn">
+                            <i class="fas fa-save"></i> Поставить оценку
+                        </button>
+                    </div>
                 </div>
                 
                 <div id="loadingState" class="loading-spinner">
                     <i class="fas fa-spinner fa-spin"></i>
-                    <p>Загрузка расписания...</p>
+                    <p>Загрузка успеваемости...</p>
                 </div>
                 
                 <div id="errorState" class="error-message" style="display: none;"></div>
                 
-                <div id="scheduleContent" style="display: none;">
-                    <table class="schedule-table" id="scheduleTable">
+                <div id="attendanceContent" style="display: none;">
+                    <table class="marks-table">
                         <thead>
                             <tr>
-                                <th>Дата и время</th>
-                                <th>Тема занятия</th>
-                                <th >Группа</th>
-                                <th id="teacherColumn">Преподаватель</th>
-                                <th id="actionsColumn">Действия</th>
+                                <th>Дата</th>
+                                <th>Курс</th>
+                                <th>Оценка</th>
+                                <th id="actionsColumn" style="display: none;">Действия</th>
                             </tr>
                         </thead>
-                        <tbody id="scheduleBody"></tbody>
+                        <tbody id="marksTableBody">
+                            <tr>
+                                <td colspan="3" class="empty-message">Выберите группу и студента</td>
+                            </tr>
+                        </tbody>
                     </table>
                     <div id="emptyState" class="empty-state" style="display: none;">
-                        <i class="fas fa-calendar-times"></i>
-                        <p>Расписание не найдено</p>
+                        <i class="fas fa-chart-simple"></i>
+                        <p>Нет данных об успеваемости</p>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Модальное окно добавления/редактирования -->
-    <div id="scheduleModal" class="modal">
+    <!-- Модальное окно редактирования -->
+    <div id="editModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeScheduleModal()">&times;</span>
-            <h3 id="modalTitle">Добавить занятие</h3>
-            <form id="scheduleForm">
-                <input type="text" id="topic" placeholder="Тема занятия" required>
-                <input type="datetime-local" id="dateTime" required>
-                <select id="groupId" required>
-                    <option value="">Выберите группу</option>
-                </select>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-outline" onclick="closeScheduleModal()">Отмена</button>
-                    <button type="submit" class="btn-primary">Сохранить</button>
-                </div>
-            </form>
+            <span class="close-modal" id="closeEditModal">&times;</span>
+            <h3><i class="fas fa-edit"></i> Редактировать оценку</h3>
+            <div class="course-name">
+                <strong>Курс:</strong> <span id="editCourseName"></span>
+            </div>
+            <input type="hidden" id="editAttendanceId">
+            <div class="form-group">
+                <label>Оценка (2-5)</label>
+                <input type="number" id="editGrade" min="2" max="5" step="1" placeholder="Оценка">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-outline" id="cancelEditBtn">Отмена</button>
+                <button class="btn-primary" id="saveEditBtn">Сохранить</button>
+            </div>
         </div>
     </div>
 
-    <script src="../js/schedule.js"></script>
+    <script src="../js/attendance.js"></script>
 </body>
 </html>

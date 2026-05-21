@@ -51,6 +51,14 @@ public class StudentController {
     }
 
 
+    @GetMapping("/group/students/{id}")
+    public ResponseEntity<?> getStudentsByGroup(@PathVariable Integer id) {
+
+        return studentService.getStudentsByGroup(id);
+
+    }
+
+
     @PutMapping("/")
     public ResponseEntity<?> updateStudent(@RequestBody RequestStudentGroup requestStudentGroup) {
 

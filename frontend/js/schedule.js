@@ -103,17 +103,11 @@ function updateNavigationByRole(roleName) {
     else if (roleName === 'Студент' || roleName === 'STUDENT' || roleName === 'ROLE_STUDENT') {
         if (scheduleLink) { scheduleLink.style.display = 'inline-block'; scheduleLink.textContent = 'Расписание'; }
         if (progressLink) { progressLink.style.display = 'inline-block'; progressLink.textContent = 'Успеваемость'; }
-        if (groupLink) { groupLink.style.display = 'inline-block'; groupLink.textContent = 'Группа'; }
-        if (myCoursesLink) { myCoursesLink.style.display = 'inline-block'; myCoursesLink.textContent = 'Мои курсы'; }
+        if (groupLink) { groupLink.style.display = 'inline-block'; groupLink.textContent = 'Моя группа'; }
+        if (myCoursesLink) { myCoursesLink.style.display = 'inline-block'; myCoursesLink.textContent = 'Мой курс'; }
         console.log('✅ Студент: Расписание, Успеваемость, Группа, Мои курсы');
     }
-    else {
-        if (scheduleLink) { scheduleLink.style.display = 'inline-block'; scheduleLink.textContent = 'Расписание'; }
-        if (progressLink) { progressLink.style.display = 'inline-block'; progressLink.textContent = 'Успеваемость'; }
-        if (groupLink) { groupLink.style.display = 'inline-block'; groupLink.textContent = 'Группа'; }
-        if (myCoursesLink) { myCoursesLink.style.display = 'inline-block'; myCoursesLink.textContent = 'Мои курсы'; }
-        console.log('✅ Неавторизованный: стандартное меню');
-    }
+  
 }
 
 // Получение роли из данных
