@@ -136,6 +136,7 @@ public class AuthService {
             user.setRole(role);
 
             Student student = new Student();
+
             student.setFirstName(requestRegister.getFirstName());
             student.setLastName(requestRegister.getLastName());
             student.setMiddleName(requestRegister.getMiddleName());
