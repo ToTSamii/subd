@@ -67,25 +67,25 @@ function updateNavigationByRole(roleName) {
     if (coursesLink) coursesLink.style.display = 'none';
     
     if (roleName === 'Администратор' || roleName === 'ADMIN' || roleName === 'ROLE_ADMIN') {
-        if (scheduleLink) { scheduleLink.style.display = 'inline-block'; scheduleLink.textContent = 'Расписание'; }
-        if (progressLink) { progressLink.style.display = 'inline-block'; progressLink.textContent = 'Успеваемость'; }
-        if (groupLink) { groupLink.style.display = 'inline-block'; groupLink.textContent = 'Группы'; }
-        if (usersLink) { usersLink.style.display = 'inline-block'; usersLink.textContent = 'Пользователи'; }
-        if (coursesLink) { coursesLink.style.display = 'inline-block'; coursesLink.textContent = 'Курсы'; }
-        console.log('✅ Админ: Расписание, Успеваемость, Группы, Пользователи, Курсы');
-    } 
+        if (scheduleLink) { scheduleLink.style.display = 'inline-block'; scheduleLink.textContent = 'Расписание'; scheduleLink.href = 'schedule.html'; }
+        if (progressLink) { progressLink.style.display = 'inline-block'; progressLink.textContent = 'Успеваемость'; progressLink.href = 'attendance.html'; }
+        if (groupLink) { groupLink.style.display = 'inline-block'; groupLink.textContent = 'Группы'; groupLink.href = 'admin-groups.html'; }
+        if (usersLink) { usersLink.style.display = 'inline-block'; usersLink.textContent = 'Пользователи'; usersLink.href = 'admin-users.html'; }
+        if (coursesLink) { coursesLink.style.display = 'inline-block'; coursesLink.textContent = 'Курсы'; coursesLink.href = 'admin-courses.html'; }
+        console.log('✅ Администратор: Расписание, Успеваемость, Группы, Пользователи, Курсы');
+    }
     else if (roleName === 'Преподаватель' || roleName === 'TEACHER' || roleName === 'ROLE_TEACHER') {
-        if (scheduleLink) { scheduleLink.style.display = 'inline-block'; scheduleLink.textContent = 'Расписание'; }
-        if (progressLink) { progressLink.style.display = 'inline-block'; progressLink.textContent = 'Успеваемость'; }
-        if (groupLink) { groupLink.style.display = 'inline-block'; groupLink.textContent = 'Группы'; }
+        if (scheduleLink) { scheduleLink.style.display = 'inline-block'; scheduleLink.textContent = 'Расписание'; scheduleLink.href = 'schedule.html'; }
+        if (progressLink) { progressLink.style.display = 'inline-block'; progressLink.textContent = 'Успеваемость'; progressLink.href = 'attendance.html'; }
+        if (groupLink) { groupLink.style.display = 'inline-block'; groupLink.textContent = 'Группы'; groupLink.href = 'teacher-groups.html'; }
         console.log('✅ Преподаватель: Расписание, Успеваемость, Группы');
     }
     else if (roleName === 'Студент' || roleName === 'STUDENT' || roleName === 'ROLE_STUDENT') {
-        if (scheduleLink) { scheduleLink.style.display = 'inline-block'; scheduleLink.textContent = 'Расписание'; }
-        if (progressLink) { progressLink.style.display = 'inline-block'; progressLink.textContent = 'Успеваемость'; }
-        if (groupLink) { groupLink.style.display = 'inline-block'; groupLink.textContent = 'Моя группа'; }
-        if (myCoursesLink) { myCoursesLink.style.display = 'inline-block'; myCoursesLink.textContent = 'Мой курс'; }
-        console.log('✅ Студент: Расписание, Успеваемость, Группа, Мои курсы');
+        if (scheduleLink) { scheduleLink.style.display = 'inline-block'; scheduleLink.textContent = 'Расписание'; scheduleLink.href = 'schedule.html'; }
+        if (progressLink) { progressLink.style.display = 'inline-block'; progressLink.textContent = 'Успеваемость'; progressLink.href = 'attendance.html'; }
+        if (groupLink) { groupLink.style.display = 'inline-block'; groupLink.textContent = 'Моя группа'; groupLink.href = 'group.html'; }
+        if (myCoursesLink) { myCoursesLink.style.display = 'inline-block'; myCoursesLink.textContent = 'Мой курс'; myCoursesLink.href = 'my-course.html'; }
+        console.log('✅ Студент: Расписание, Успеваемость, Моя группа, Мой курс');
     }
 
 }

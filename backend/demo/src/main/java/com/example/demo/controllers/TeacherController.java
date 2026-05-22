@@ -30,6 +30,14 @@ public class TeacherController {
     }
 
 
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllTeachers() {
+
+        return teacherService.getAllTeachers();
+
+    }
+
+
     @GetMapping("/groups/{id}")
     public ResponseEntity<?> getTeacherGroups(@PathVariable Integer id) {
 

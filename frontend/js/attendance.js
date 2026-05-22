@@ -1,18 +1,4 @@
-// attendance.js
-const API_URL = 'http://localhost:8080/api';
 
-// DOM элементы
-const loadingState = document.getElementById('loadingState');
-const errorState = document.getElementById('errorState');
-const attendanceContent = document.getElementById('attendanceContent');
-const emptyState = document.getElementById('emptyState');
-const marksTableBody = document.getElementById('marksTableBody');
-const roleBadge = document.getElementById('roleBadge');
-const logoutBtn = document.getElementById('logoutBtn');
-const userNameSpan = document.getElementById('userName');
-const userAvatar = document.getElementById('userAvatar');
-const userProfileClick = document.getElementById('userProfileClick');
-const logoLink = document.getElementById('logoLink');
 
 // Элементы для учителя/админа
 const teacherPanel = document.getElementById('teacherPanel');
@@ -36,9 +22,6 @@ let currentCourseId = null;
 let currentAttendanceId = null;
 let currentStudentId = null;
 
-// Навигация
-const scheduleLink = document.getElementById('scheduleLink');
-const progressLink = document.getElementById('progressLink');
 
 if (logoLink) {
     logoLink.onclick = () => window.location.href = 'index.html';

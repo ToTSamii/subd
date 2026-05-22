@@ -63,6 +63,25 @@ public class TeacherService {
     }
 
 
+    //Получение всех преподавателей
+    @Transactional
+    public ResponseEntity<?> getAllTeachers() {
+
+        try {
+
+            List<Teacher> teachers = teacherRepository.findAll();
+
+            return ResponseEntity.ok(teachers);
+
+        } catch (Exception e) {
+
+            return ResponseEntity.status(500).body("Ошибка получения всех преподавателей " + e.getMessage());
+
+        }
+
+    }
+
+
     //Получение расписания преподавателя по id пользователя
     @Transactional
     public ResponseEntity<?> getTeacherSchedule(Integer userId) {

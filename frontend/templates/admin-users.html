@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление пользователями - IT-Обучение</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <style>
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-header h1 i {
+            color: #2563eb;
+        }
+
+        .btn-add {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-add:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .users-table-wrapper {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .users-table th,
+        .users-table td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid #eef2f8;
+        }
+
+        .users-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .users-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .user-avatar-cell {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+            overflow: hidden;
+        }
+
+        .user-avatar-cell img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .role-admin {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .role-teacher {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+
+        .role-student {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-edit {
+            background: #eab308;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .btn-edit:hover {
+            background: #ca8a04;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .loading-state, .error-state {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .loading-state i {
+            font-size: 2rem;
+            color: #2563eb;
+            margin-bottom: 16px;
+        }
+
+        .error-state {
+            background: #fee2e2;
+            border-radius: 16px;
+            color: #dc2626;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 50px auto;
+            padding: 32px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+            color: #1e293b;
+        }
+
+        .close-modal {
+            font-size: 28px;
+            cursor: pointer;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: #1e293b;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #475569;
+            font-size: 0.85rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: border 0.2s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .password-hint {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .users-table-wrapper {
+                overflow-x: auto;
+            }
+            .users-table {
+                min-width: 600px;
+            }
+            .modal-content {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="navbar">
+                <div class="logo" id="logoLink">
+                    <i class="fas fa-laptop-code"></i>
+                    <span>IT-Обучение</span>
+                </div>
+                <div class="user-nav" id="userNav">
+                    <a href="index.html" id="homeLink">Главная</a>
+                    <a href="schedule.html" id="scheduleLink">Расписание</a>
+                    <a href="attendance.html" id="progressLink">Успеваемость</a>
+                    <a href="admin-groups.html" id="groupLink">Группы</a>
+                    <a href="admin-users.html" id="usersLink">Пользователи</a>
+                    <a href="admin-courses.html" id="coursesLink">Курсы</a>
+                </div>
+                    
+                <div id="authButtons">
+                    <button class="btn-outline" id="loginBtn">Вход</button>
+                    <button class="btn-primary" id="registerBtn">Регистрация</button>
+                </div>
+                
+                <div id="userInfo" style="display: none;">
+                    <div class="user-profile" id="userProfileClick">
+                        <div class="user-avatar" id="userAvatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span id="userName"></span>
+                        <button class="btn-outline" id="logoutBtn">Выйти</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="admin-container">
+            <div class="page-header">
+                <h1>
+                    <i class="fas fa-users"></i>
+                    Управление пользователями
+                </h1>
+                <button class="btn-add" id="addUserBtn">
+                    <i class="fas fa-plus"></i> Добавить пользователя
+                </button>
+            </div>
+
+            <div id="loadingState" class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Загрузка пользователей...</p>
+            </div>
+
+            <div id="errorState" class="error-state" style="display: none;"></div>
+
+            <div id="usersContainer" style="display: none;">
+                <div class="users-table-wrapper">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Аватар</th>
+                                <th>Логин</th>
+                                <th>Email</th>
+                                <th>Роль</th>
+                                <th>Дата регистрации</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Модальное окно добавления/редактирования пользователя -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Добавить пользователя</h3>
+                <span class="close-modal" id="closeModalBtn">&times;</span>
+            </div>
+            <form id="userForm">
+                <input type="hidden" id="userId" value="">
+                <div class="form-group">
+                    <label>Логин *</label>
+                    <input type="text" id="userLogin" placeholder="Введите логин" required>
+                </div>
+                <div class="form-group">
+                    <label>Пароль <span id="passwordRequired">*</span></label>
+                    <input type="password" id="userPassword" placeholder="Введите пароль">
+                    <div class="password-hint" id="passwordHint">Минимум 6 символов (оставьте пустым, чтобы не менять)</div>
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="userEmail" placeholder="example@mail.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Фото (URL)</label>
+                    <input type="url" id="userPhoto" placeholder="https://example.com/photo.jpg">
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-outline" id="cancelBtn">Отмена</button>
+                    <button type="submit" class="btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/admin-users.js"></script>
+</body>
+</html>

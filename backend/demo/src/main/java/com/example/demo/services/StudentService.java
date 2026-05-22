@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.requestDto.RequestAddMark;
 import com.example.demo.dtos.requestDto.RequestStudentGroup;
-import com.example.demo.dtos.responseDto.ResponseGroup;
 import com.example.demo.dtos.responseDto.ResponseStudent.ResponseScheldue;
 import com.example.demo.dtos.responseDto.ResponseStudent.ResponseScheldues;
 import com.example.demo.entities.Attendance;
@@ -155,13 +154,7 @@ public class StudentService {
 
                 }
 
-                ResponseGroup responseGroup = new ResponseGroup();
-                responseGroup.setName(student.getGroup().getName());
-                responseGroup.setCourseName(student.getGroup().getCourse().getName());
-                responseGroup.setStartDate(student.getGroup().getStartDate());
-                responseGroup.setEndDate(student.getGroup().getEndDate());
-
-                return ResponseEntity.ok(responseGroup);
+                return ResponseEntity.ok(student.getGroup());
 
             } else {
 

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои группы - IT-Обучение</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <style>
+        .groups-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-header h1 i {
+            color: #2563eb;
+        }
+
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        .group-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .group-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        }
+
+        .group-card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: white;
+        }
+
+        .group-card-header h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        .group-card-header .course-name {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .group-card-body {
+            padding: 20px;
+        }
+
+        .group-info {
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            color: #475569;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #eef2f8;
+        }
+
+        .info-item i {
+            width: 20px;
+            color: #2563eb;
+        }
+
+        .students-list {
+            margin-top: 16px;
+        }
+
+        .students-list h4 {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .students-list h4 i {
+            color: #2563eb;
+        }
+
+        .student-items {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .student-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            background: #f8fafc;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: background 0.2s;
+        }
+
+        .student-item:hover {
+            background: #f1f5f9;
+        }
+
+        .student-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .student-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .student-avatar i {
+            font-size: 0.8rem;
+        }
+
+        .student-info {
+            flex: 1;
+        }
+
+        .student-name {
+            font-weight: 500;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+
+        .student-login {
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+
+        .empty-students {
+            text-align: center;
+            padding: 20px;
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .loading-state, .error-state {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .loading-state i {
+            font-size: 2rem;
+            color: #2563eb;
+            margin-bottom: 16px;
+        }
+
+        .error-state {
+            background: #fee2e2;
+            border-radius: 16px;
+            color: #dc2626;
+        }
+
+        .no-groups {
+            text-align: center;
+            padding: 60px;
+            background: #f8fafc;
+            border-radius: 16px;
+        }
+
+        .no-groups i {
+            font-size: 4rem;
+            color: #94a3b8;
+            margin-bottom: 16px;
+        }
+
+        .no-groups p {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .groups-grid {
+                grid-template-columns: 1fr;
+            }
+            .groups-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="navbar">
+                <div class="logo" id="logoLink">
+                    <i class="fas fa-laptop-code"></i>
+                    <span>IT-Обучение</span>
+                </div>
+                <div class="user-nav" id="userNav">
+                    <a href="index.html" id="homeLink">Главная</a>
+                    <a href="schedule.html" id="scheduleLink">Расписание</a>
+                    <a href="attendance.html" id="progressLink">Успеваемость</a>
+                    <a href="teacher-groups.html" id="groupLink">Группы</a>
+                    <a href="#" id="usersLink" style="display: none;">Пользователи</a>
+                    <a href="#" id="coursesLink" style="display: none;">Курсы</a>
+                </div>
+                    
+                <div id="authButtons">
+                    <button class="btn-outline" id="loginBtn">Вход</button>
+                    <button class="btn-primary" id="registerBtn">Регистрация</button>
+                </div>
+                
+                <div id="userInfo" style="display: none;">
+                    <div class="user-profile" id="userProfileClick">
+                        <div class="user-avatar" id="userAvatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span id="userName"></span>
+                        <button class="btn-outline" id="logoutBtn">Выйти</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="groups-container">
+            <div class="page-header">
+                <h1>
+                    <i class="fas fa-chalkboard-user"></i>
+                    Мои группы
+                </h1>
+                <p>Группы, в которых вы являетесь преподавателем</p>
+            </div>
+
+            <div id="loadingState" class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Загрузка групп...</p>
+            </div>
+
+            <div id="errorState" class="error-state" style="display: none;"></div>
+
+            <div id="groupsContainer" style="display: none;">
+                <div id="groupsGrid" class="groups-grid"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Модальное окно входа -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Вход</h2>
+            <div id="loginMessage" class="form-message" style="display: none;"></div>
+            <form id="loginForm">
+                <input type="text" id="loginUsername" placeholder="Логин" required>
+                <input type="password" id="loginPassword" placeholder="Пароль" required>
+                <button type="submit" class="btn-primary">Войти</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно регистрации -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content register-modal">
+            <span class="close">&times;</span>
+            <h2>Регистрация</h2>
+            <div id="registerMessage" class="form-message" style="display: none;"></div>
+            <form id="registerForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Логин *</label>
+                        <input type="text" id="regLogin" placeholder="Введите логин" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="regEmail" placeholder="example@mail.com" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Пароль *</label>
+                        <input type="password" id="regPassword" placeholder="Минимум 6 символов" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Подтверждение пароля *</label>
+                        <input type="password" id="regPasswordConfirm" placeholder="Повторите пароль" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Имя *</label>
+                        <input type="text" id="regFirstName" placeholder="Иван" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Фамилия</label>
+                        <input type="text" id="regLastName" placeholder="Иванов">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Отчество</label>
+                        <input type="text" id="regMiddleName" placeholder="Иванович">
+                    </div>
+                    <div class="form-group">
+                        <label>Дата рождения</label>
+                        <input type="date" id="regBirthDate">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Фото (URL)</label>
+                    <input type="url" id="regPhoto" placeholder="https://example.com/photo.jpg">
+                </div>
+                <button type="submit" class="btn-primary register-submit">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/teacher-groups.js"></script>
+</body>
+</html>

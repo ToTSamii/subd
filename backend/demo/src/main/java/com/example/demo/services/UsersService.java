@@ -3,7 +3,6 @@ package com.example.demo.services;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import com.example.demo.dtos.requestDto.RequestUser;
 import com.example.demo.dtos.responseDto.ResponseUserList;
@@ -93,7 +92,7 @@ public class UsersService {
 
     //Обновление пользователя
     @Transactional
-    public ResponseEntity<?> updateUser(@NonNull Integer id, RequestUser requestUser) {
+    public ResponseEntity<?> updateUser(Integer id, RequestUser requestUser) {
 
         try {
 
